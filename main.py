@@ -4,4 +4,4 @@ app = FastAPI()
 
 @app.get("/teste", status_code=200)
 def test():
-    return {"message": "Hello World"}
+    return {"umessage": "Hello World"}
