@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8" />
+    <title>Assistente Consórcio</title>
+    <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body>
+    <div id="chatWidget">
+        <div id="chatHeader">
+            Assistente Virtual
+            <button id="toggleWidget" onclick="toggleWidget()">✕</button>
+        </div>
+
+        <div id="chatTabs">
+            <button onclick="trocarAba('duvidas')" class="aba ativa">Dúvidas</button>
+            <button onclick="trocarAba('simulacao')" class="aba">Simulação</button>
+        </div>
+
+        <div id="conteudoDuvidas" class="chatBody">
+            <p>Qual seria sua dúvida?</p>
+            <input type="text" id="perguntaInput" placeholder="Digite sua dúvida..." />
+            <button onclick="enviarPergunta()">Enviar</button>
+            <p id="respostaBot"></p>
+        </div>
+
+        <div id="conteudoSimulacao" class="chatBody" style="display: none;">
+            <p>Motos disponíveis:</p>
+            <ul id="listaMotos"></ul>
+        </div>
+    </div>
+
+    <button id="abrirChat" onclick="toggleWidget()">💬 Atendente</button>
+
+    <script src="/static/script.js"></script>
+</body>
+</html>
