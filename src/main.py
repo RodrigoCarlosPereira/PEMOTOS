@@ -1,8 +1,9 @@
 from dotenv import load_dotenv
+from src import ChatInput, Prompt
 from fastapi import FastAPI, Request
 from fastapi.responses import HTMLResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
-from pydantic import BaseModel
+
 import sqlite3
 import openai
 import os
@@ -20,10 +21,8 @@ else:
     print("Chave da API carregada com sucesso.")
 
 app = FastAPI()
-app.mount("/static", StaticFiles(directory="static"), name="static")
+app.mount("/static", StaticFiles(directory=os.path.join("src", "static")), name="static")
 
-class ChatInput(BaseModel):
-    pergunta: str
 
 @app.get("/", response_class=HTMLResponse)
 async def read_root():
@@ -32,17 +31,11 @@ async def read_root():
 
 @app.post("/chat")
 async def chat_pergunta(body: ChatInput):
-    prompt = f"Você é um atendente especializado em consórcios da Pernambuco Motos. Responda a dúvida do cliente de forma clara e objetiva:\n\nCliente: {body.pergunta}\nAtendente:"
 
     try:
-        response = openai.ChatCompletion.create(
-            model="gpt-3.5-turbo",  # Usando o modelo adequado para chat
-            messages=[{"role": "system", "content": "Você é um atendente especializado em consórcios da Pernambuco Motos."},
-                      {"role": "user", "content": body.pergunta}],
-            temperature=0.7,
-            max_tokens=1000
-        )
-        resposta = response['choices'][0]['message']['content'].strip()
+        response = Prompt.prompt(body)['choices'][0]['message']['content'].strip()
+        
+        resposta = response
         print("Resposta da OpenAI:", resposta)  # Para depuração
         return JSONResponse(content={"resposta": resposta})
     except Exception as e:
@@ -67,7 +60,7 @@ async def get_motos():
     cursor.execute('DELETE FROM motos')
     cursor.execute(''' 
         INSERT OR IGNORE INTO motos (nome, link_simulacao) VALUES
-        ('POP 110i', 'https://consorcio.pernambucomotos.com.br/products/pop-110i'),
+        ('POoP 110i', 'https://consorcio.pernambucomotos.com.br/products/pop-110i'),
         ('CG 160 START', 'https://consorcio.pernambucomotos.com.br/products/cg-160-start'),
         ('BIZ 125 ES', 'https://consorcio.pernambucomotos.com.br/products/biz-125-es'),
         ('PCX', 'https://consorcio.pernambucomotos.com.br/products/pcx');
