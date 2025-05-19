@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Simulação de Consórcio</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #e5ddd5;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .chat-container {
+            background-color: #fff;
+            width: 400px;
+            height: 500px;
+            border-radius: 10px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .chat-header {
+            background-color: #ff4c4c; /* Vermelho predominante */
+            color: white;
+            padding: 15px;
+            font-size: 18px;
+            text-align: center;
+        }
+
+        .chat-box {
+            flex: 1;
+            overflow-y: auto;
+            padding: 10px;
+            background-color: #f9f9f9;
+            margin: 10px;
+            border-radius: 8px;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .chat-message {
+            background-color: #ff4c4c; /* Vermelho predominante */
+            color: white;
+            padding: 10px;
+            border-radius: 8px;
+            margin: 10px 0;
+            width: fit-content;
+            max-width: 75%;
+        }
+
+        .user-message {
+            background-color: #e1e1e1;
+            color: #333;
+            margin-left: auto;
+        }
+
+        .response-user {
+            background-color: #e1e1e1;
+            color: #333;
+            margin-left: auto;
+            margin-top: 10px;
+            border-radius: 8px;
+            padding: 10px;
+            max-width: 75%;
+        }
+
+        .response-bot {
+            background-color: #ff4c4c; /* Vermelho predominante */
+            color: white;
+            margin-top: 10px;
+            border-radius: 8px;
+            padding: 10px;
+            max-width: 75%;
+        }
+
+        .btn {
+            display: inline-block;
+            margin: 10px;
+            padding: 15px 25px;
+            font-size: 16px;
+            background-color: #b8e0d2; /* Cor pastel para botões */
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .btn:hover {
+            background-color: #a0c4c1; /* Cor pastel mais escura */
+        }
+
+        .input-container {
+            display: flex;
+            justify-content: center;
+            padding: 10px;
+            background-color: #fff;
+        }
+
+        #resposta {
+            margin-top: 20px;
+            font-weight: bold;
+            color: #ff4c4c;
+        }
+
+        .pergunta {
+            background-color: #f0e4d7; /* Cor pastel para perguntas */
+            color: #333;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 8px;
+            cursor: pointer;
+            max-width: 75%;
+        }
+
+        .pergunta:hover {
+            background-color: #d8c6a3; /* Cor pastel mais escura para hover */
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="chat-container">
+        <div class="chat-header">
+            Simulação de Consórcio
+        </div>
+        
+        <div class="chat-box" id="chat-box">
+            <div class="chat-message">Olá! Como posso ajudá-lo hoje?</div>
+        </div>
+        
+        <div class="input-container">
+            <button class="btn" onclick="mostrarOpcoes()">Escolher opção</button>
+        </div>
+    </div>
+
+    <script>
+        function mostrarOpcoes() {
+            document.getElementById('chat-box').innerHTML += `
+                <div class="chat-message">Escolha uma opção:</div>
+                <div class="chat-message response-user" onclick="escolherOpcao('Simular consórcio')">Simular consórcio</div>
+                <div class="chat-message response-user" onclick="escolherOpcao('Tirar dúvidas')">Tirar dúvidas</div>
+            `;
+        }
+
+        function escolherOpcao(opcao) {
+            const chatBox = document.getElementById('chat-box');
+            
+            // Remover as opções anteriores
+            const options = chatBox.querySelectorAll('.chat-message');
+            options.forEach(option => option.remove());
+
+            // Exibir a opção escolhida do lado direito
+            const opcaoEscolhida = document.createElement('div');
+            opcaoEscolhida.classList.add('chat-message', 'response-user');
+            opcaoEscolhida.textContent = opcao;
+            opcaoEscolhida.style.backgroundColor = "#b8e0d2"; // Cor pastel
+            chatBox.appendChild(opcaoEscolhida);
+
+            // Mostrar perguntas ou motos com base na escolha
+            if (opcao === 'Simular consórcio') {
+                mostrarMotos();
+            } else if (opcao === 'Tirar dúvidas') {
+                mostrarPerguntas();
+            }
+        }
+
+        function mostrarMotos() {
+            document.getElementById('chat-box').innerHTML += `
+                <div class="chat-message response-user">Escolha sua moto para simulação:</div>
+            `;
+            carregarMotos();
+        }
+
+        function mostrarPerguntas() {
+            // Apagar todas as opções de perguntas anteriores antes de exibir as novas
+            const chatBox = document.getElementById('chat-box');
+            const options = chatBox.querySelectorAll('.chat-message');
+            options.forEach(option => option.remove());
+
+            document.getElementById('chat-box').innerHTML += `
+                <div class="chat-message response-user">Escolha uma pergunta abaixo:</div>
+                <div class="chat-message pergunta" onclick="fazerPergunta('Como funciona o consórcio?')">Como funciona o consórcio?</div>
+                <div class="chat-message pergunta" onclick="fazerPergunta('Como é feito o consórcio?')">Como é feito o consórcio?</div>
+                <div class="chat-message pergunta" onclick="fazerPergunta('Quais são as vantagens do consórcio?')">Quais são as vantagens do consórcio?</div>
+                <div class="chat-message pergunta" onclick="fazerPergunta('O que é o consórcio da Pernambuco Motos?')">O que é o consórcio da Pernambuco Motos?</div>
+                <div class="chat-message pergunta" onclick="fazerPergunta('Quais modelos de motos estão disponíveis?')">Quais modelos de motos estão disponíveis?</div>
+                <div class="chat-message pergunta" onclick="fazerPergunta('Como posso ser contemplado rapidamente?')">Como posso ser contemplado rapidamente?</div>
+                <div class="chat-message pergunta" onclick="fazerPergunta('Posso mudar o modelo da moto durante o consórcio?')">Posso mudar o modelo da moto durante o consórcio?</div>
+                <div class="chat-message pergunta" onclick="fazerPergunta('Como faço para pagar as parcelas?')">Como faço para pagar as parcelas?</div>
+                <div class="chat-message pergunta" onclick="fazerPergunta('Posso pagar duas parcelas no mesmo mês?')">Posso pagar duas parcelas no mesmo mês?</div>
+                <div class="chat-message pergunta" onclick="fazerPergunta('Quais são as taxas envolvidas?')">Quais são as taxas envolvidas?</div>
+                <div class="chat-message pergunta" onclick="fazerPergunta('O que acontece se eu atrasar o pagamento das parcelas?')">O que acontece se eu atrasar o pagamento das parcelas?</div>
+                <div class="chat-message pergunta" onclick="fazerPergunta('Como posso acompanhar o andamento do meu consórcio?')">Como posso acompanhar o andamento do meu consórcio?</div>
+                <div class="chat-message pergunta" onclick="fazerPergunta('Quais são os canais de atendimento da Pernambuco Motos?')">Quais são os canais de atendimento da Pernambuco Motos?</div>
+            `;
+        }
+
+        function carregarMotos() {
+            fetch('/motos')
+                .then(response => response.json())
+                .then(data => {
+                    const motosDiv = document.getElementById('chat-box');
+                    data.forEach(moto => {
+                        motosDiv.innerHTML += `
+                            <div class="chat-message">
+                                <h3>${moto.nome}</h3>
+                                <a href="${moto.link_simulacao}" target="_blank" class="btn">Simular</a>
+                            </div>
+                        `;
+                    });
+                    perguntarSeAjudaMais();
+                })
+                .catch(error => console.error('Erro ao carregar motos:', error));
+        }
+
+        function fazerPergunta(pergunta) {
+            // Apagar todas as opções de perguntas anteriores antes de mostrar a resposta
+            const chatBox = document.getElementById('chat-box');
+            const options = chatBox.querySelectorAll('.chat-message');
+            options.forEach(option => option.remove());
+
+            fetch(`/pergunta/${encodeURIComponent(pergunta)}`)
+                .then(response => response.text())
+                .then(resposta => {
+                    document.getElementById('chat-box').innerHTML += `
+                        <div class="chat-message user-message">${pergunta}</div>
+                        <div class="chat-message">${resposta}</div>
+                    `;
+                    perguntarSeAjudaMais();
+                })
+                .catch(error => console.error('Erro ao buscar resposta:', error));
+        }
+
+        function perguntarSeAjudaMais() {
+            document.getElementById('chat-box').innerHTML += `
+                <div class="chat-message">Posso ajudar em algo mais?</div>
+                <div class="chat-message" onclick="mostrarOpcoes()">Sim</div>
+                <div class="chat-message" onclick="finalizarChat()">Não</div>
+            `;
+        }
+
+        function finalizarChat() {
+            document.getElementById('chat-box').innerHTML += `
+                <div class="chat-message">Obrigado por usar a nossa simulação. Até logo!</div>
+            `;
+            document.querySelector('.input-container').style.display = 'none'; // Esconde o botão
+        }
+
+    </script>
+
+</body>
+</html>
