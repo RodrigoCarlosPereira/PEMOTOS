@@ -32,23 +32,44 @@ async def read_root():
 
 @app.post("/chat")
 async def chat_pergunta(body: ChatInput):
-    prompt = f"Você é um atendente especializado em consórcios da Pernambuco Motos. Responda a dúvida do cliente de forma clara e objetiva:\n\nCliente: {body.pergunta}\nAtendente:"
+    pergunta_lower = body.pergunta.lower().strip()
 
+    # Detecta intenção de simulação
+    if "quero simular" in pergunta_lower or "simular" in pergunta_lower:
+        conn = sqlite3.connect("motos.db")
+        cursor = conn.cursor()
+        cursor.execute('SELECT nome, link_simulacao FROM motos')
+        motos_data = cursor.fetchall()
+        conn.close()
+
+        # Gera HTML com botões
+        resposta = "Certo! Qual dessas motos você deseja simular?<br><br>"
+        for nome, link in motos_data:
+            resposta += f"""
+            <div style="margin-bottom: 10px;">
+              <strong>{nome}</strong><br>
+              <a href="{link}" target="_blank" style="display: inline-block; padding: 6px 12px; background: #cc0000; color: white; text-decoration: none; border-radius: 4px;">Simular</a>
+            </div>
+            """
+
+        return JSONResponse(content={"resposta": resposta})
+
+    # Caso contrário, usar a OpenAI para responder normalmente
     try:
         response = openai.ChatCompletion.create(
-            model="gpt-3.5-turbo",  # Usando o modelo adequado para chat
-            messages=[{"role": "system", "content": "Você é um atendente especializado em consórcios da Pernambuco Motos."},
-                      {"role": "user", "content": body.pergunta}],
+            model="gpt-3.5-turbo",
+            messages=[
+                {"role": "system", "content": "Você é um atendente especializado em consórcios da Pernambuco Motos."},
+                {"role": "user", "content": body.pergunta}
+            ],
             temperature=0.7,
             max_tokens=1000
         )
         resposta = response['choices'][0]['message']['content'].strip()
-        print("Resposta da OpenAI:", resposta)  # Para depuração
         return JSONResponse(content={"resposta": resposta})
     except Exception as e:
-        print("Erro:", e)  # Para depuração
+        print("Erro:", e)
         return JSONResponse(content={"resposta": "Desculpe, houve um erro ao tentar responder. Tente novamente mais tarde."})
-
 @app.get("/motos")
 async def get_motos():
     conn = sqlite3.connect("motos.db")

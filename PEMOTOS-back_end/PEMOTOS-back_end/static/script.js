@@ -44,22 +44,37 @@ function addUserMessage(text) {
 function addBotMessage(text) {
   const msg = document.createElement('div');
   msg.classList.add('message', 'bot');
-  msg.textContent = text;
+  msg.innerHTML = text;  // Permite HTML vindo do backend
   chatMessages.appendChild(msg);
   chatMessages.scrollTop = chatMessages.scrollHeight;
 }
 
+
 // Enviar mensagem (integrar a API)
-chatForm.addEventListener('submit', e => {
+chatForm.addEventListener('submit', async e => {
   e.preventDefault();
   const userText = chatInput.value.trim();
   if (!userText) return;
+
   addUserMessage(userText);
   chatInput.value = '';
   chatInput.focus();
 
-  // Fazer a chamada para API e ao receber resposta:
-  // addBotMessage(respostaDaApi);
+  try {
+    const response = await fetch('/chat', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ pergunta: userText })
+    });
+
+    const data = await response.json();
+    addBotMessage(data.resposta);
+  } catch (error) {
+    console.error('Erro ao enviar mensagem:', error);
+    addBotMessage('Desculpe, ocorreu um erro ao enviar sua mensagem. Tente novamente mais tarde.');
+  }
 });
 
 // Abrir chat com teclado (acessibilidade)
