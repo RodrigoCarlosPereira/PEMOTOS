@@ -5,3 +5,5 @@ pydantic
 pandas
 openai
 python-multipart
+openpyxl
+
