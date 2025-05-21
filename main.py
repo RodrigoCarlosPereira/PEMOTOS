@@ -7,6 +7,7 @@ from fastapi import Depends, HTTPException
 from fastapi.security import HTTPBasic, HTTPBasicCredentials
 from fastapi.responses import StreamingResponse
 from io import BytesIO
+from openai import OpenAI
 import sqlite3
 import openai
 import os
@@ -14,7 +15,8 @@ import secrets
 import pandas as pd
 
 load_dotenv()
-openai.api_key = os.getenv("OPENAI_API_KEY")
+client = OpenAI()
+
 
 app = FastAPI()
 app.mount("/static", StaticFiles(directory="static"), name="static")
@@ -75,8 +77,8 @@ async def chat_pergunta(body: ChatInput):
 
     # Chamada à OpenAI para perguntas gerais
     try:
-        response = openai.ChatCompletion.create(
-            model="gpt-3.5-turbo",
+        response = client.chat.completions.create(
+            model="gpt-4o",
             messages=[
                 {"role": "system", "content": """
                     Você é um atendente especializado em consórcios da Pernambuco Motos (Pe Motos). Seu objetivo é fornecer respostas claras, objetivas e precisas, sem enrolação, sempre levando em consideração os regulamentos e as condições dos consórcios de aquisição de produtos da Honda, como motos e outros veículos. 
@@ -96,7 +98,7 @@ async def chat_pergunta(body: ChatInput):
             temperature=0.7,
             max_tokens=1000
         )
-        resposta = response['choices'][0]['message']['content'].strip()
+        resposta = response.choices[0].message.content.strip()
 
         # Registrar pergunta/resposta
         conn = sqlite3.connect("motos.db")
