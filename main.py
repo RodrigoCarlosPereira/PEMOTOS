@@ -76,7 +76,7 @@ async def chat_pergunta(body: ChatInput):
     # Chamada à OpenAI para perguntas gerais
     try:
         response = openai.ChatCompletion.create(
-            model="gpt-3.5-turbo",
+            model="gpt-4o-mini",
             messages=[
                 {"role": "system", "content": """
                     Você é um atendente especializado em consórcios da Pernambuco Motos (Pe Motos). Seu objetivo é fornecer respostas claras, objetivas e precisas, sem enrolação, sempre levando em consideração os regulamentos e as condições dos consórcios de aquisição de produtos da Honda, como motos e outros veículos. 
