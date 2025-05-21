@@ -1,12 +1,3 @@
-<<<<<<< HEAD
-from fastapi import FastAPI
-
-app = FastAPI()
-
-@app.get("/teste", status_code=200)
-def test():
-    return {"umessage": "Hello World"}
-=======
 from dotenv import load_dotenv
 from fastapi import FastAPI, status
 from fastapi.responses import HTMLResponse, JSONResponse
@@ -283,4 +274,3 @@ async def exportar_perguntas(user: str = Depends(autenticar)):
 
     output.seek(0)
     return StreamingResponse(output, media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", headers={"Content-Disposition": "attachment; filename=perguntas.xlsx"})
->>>>>>> 1c2c0c5 (Deploy inicial para Heroku)
