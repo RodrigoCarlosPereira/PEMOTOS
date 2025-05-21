@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>Painel Administrativo - Chat PE Motos</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+    }
+    h1 {
+      color: #cc0000;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+    th, td {
+      border: 1px solid #ccc;
+      padding: 8px;
+      text-align: left;
+    }
+    th {
+      background-color: #f4f4f4;
+    }
+    #acessos {
+      font-size: 18px;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Painel Administrativo - Chat PE Motos</h1>
+  <div id="acessos">Carregando total de acessos...</div>
+
+  <h2>Histórico de Perguntas</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Data/Hora</th>
+        <th>Pergunta</th>
+        <th>Resposta</th>
+      </tr>
+    </thead>
+    <tbody id="tabela-perguntas"></tbody>
+  </table>
+
+  <script>
+    async function carregarAcessos() {
+      const res = await fetch('/admin/acessos');
+      const data = await res.json();
+      document.getElementById('acessos').textContent = `Total de acessos ao chat: ${data.total_acessos}`;
+    }
+
+    async function carregarPerguntas() {
+      const res = await fetch('/admin/perguntas');
+      const dados = await res.json();
+      const tabela = document.getElementById('tabela-perguntas');
+      tabela.innerHTML = '';
+
+      dados.forEach(registro => {
+        const tr = document.createElement('tr');
+
+        const tdData = document.createElement('td');
+        tdData.textContent = new Date(registro.timestamp).toLocaleString();
+        tr.appendChild(tdData);
+
+        const tdPergunta = document.createElement('td');
+        tdPergunta.textContent = registro.pergunta;
+        tr.appendChild(tdPergunta);
+
+        const tdResposta = document.createElement('td');
+        tdResposta.innerHTML = registro.resposta; // pode conter HTML
+        tr.appendChild(tdResposta);
+
+        tabela.appendChild(tr);
+      });
+    }
+
+    carregarAcessos();
+    carregarPerguntas();
+  </script>
+</body>
+</html>
