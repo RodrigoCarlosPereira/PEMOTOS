@@ -6,6 +6,7 @@ from pydantic import BaseModel
 from fastapi import Depends, HTTPException
 from fastapi.security import HTTPBasic, HTTPBasicCredentials
 from fastapi.responses import StreamingResponse
+from openai import OpenAI
 from io import BytesIO
 from openai import OpenAI
 import sqlite3
@@ -15,7 +16,8 @@ import secrets
 import pandas as pd
 
 load_dotenv()
-client = OpenAI()
+
+client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 
 app = FastAPI()
